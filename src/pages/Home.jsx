@@ -11,6 +11,8 @@ function Home() {
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [indicaciones, setIndicaciones] = useState("");
   const [localSeleccionado, setLocalSeleccionado] = useState("HYATT");
+  const [estadoPedido, setEstadoPedido] = useState("");
+  const [mensajeVisible, setMensajeVisible] = useState(false);
 
   const navigate = useNavigate();
   const numeroTelefono = localStorage.getItem("numeroTelefono");
@@ -22,11 +24,33 @@ function Home() {
     }
   }, [navigate, numeroTelefono]);
 
+  // Obtener catálogo de productos
   useEffect(() => {
     axios.get("https://realbarlacteo-1.onrender.com/api/catalogo")
       .then(res => setProductos(res.data))
       .catch(err => console.error(err));
   }, []);
+
+  // 🔁 Verificar el estado del último pedido cada 10 segundos
+  useEffect(() => {
+    if (!numeroTelefono) return;
+
+    const intervalo = setInterval(async () => {
+      try {
+        const res = await axios.get(`https://realbarlacteo-1.onrender.com/api/pedidos/ultimo-estado?telefono=${numeroTelefono}`);
+        const nuevoEstado = res.data?.estado;
+
+        if (nuevoEstado && nuevoEstado !== "pendiente" && nuevoEstado !== estadoPedido) {
+          setEstadoPedido(nuevoEstado);
+          setMensajeVisible(true);
+        }
+      } catch (err) {
+        console.error("Error al verificar el estado del pedido:", err);
+      }
+    }, 10000); // cada 10 segundos
+
+    return () => clearInterval(intervalo);
+  }, [numeroTelefono, estadoPedido]);
 
   const agregarAlCarrito = (producto) => {
     setCarrito([...carrito, producto]);
@@ -72,13 +96,26 @@ function Home() {
   return (
     <div className="p-6">
       <div className="bg-white bg-opacity-80 rounded-lg p-4 shadow-md mb-6">
-  <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">
-    Bienvenido al Bartolo Apolinav
-  </h1>
-  <p className="text-sm text-center text-gray-800">
-    Teléfono identificado: <strong>{numeroTelefono}</strong>
-  </p>
-</div>
+        <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">
+          Bienvenido al Bartolo Apolinav
+        </h1>
+        <p className="text-sm text-center text-gray-800">
+          Teléfono identificado: <strong>{numeroTelefono}</strong>
+        </p>
+      </div>
+
+      {/* 🔔 Mensaje reactivo de estado del pedido */}
+      {mensajeVisible && (
+        <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded mb-4 text-center">
+          Tu pedido está <strong>{estadoPedido}</strong>. Por favor acércate al mesón.
+          <button
+            className="ml-4 text-blue-600 underline"
+            onClick={() => setMensajeVisible(false)}
+          >
+            Cerrar
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {productos.map(p => (
