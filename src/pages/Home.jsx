@@ -8,6 +8,12 @@ function Home() {
   const [productos, setProductos] = useState([]);
   const [carrito, setCarrito] = useState([]);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
+  const [indicaciones, setIndicaciones] = useState("");
+  const numeroTelefono = localStorage.getItem("numeroTelefono") || "+autoservicio";
+  const [localSeleccionado, setLocalSeleccionado] = useState("HYATT");
+  
+
+
 
   useEffect(() => {
     axios.get("https://realbarlacteo-1.onrender.com/api/catalogo")
@@ -17,13 +23,15 @@ function Home() {
 
   const agregarAlCarrito = (producto) => {
     setCarrito([...carrito, producto]);
-  setMostrarCarrito(true);
+    setMostrarCarrito(true);
   };
-const eliminarDelCarrito = (index) => {
-  const nuevo = carrito.filter((_, i) => i !== index);
-  setCarrito(nuevo);
-};
-const finalizarPedido = async () => {
+
+  const eliminarDelCarrito = (index) => {
+    const nuevo = carrito.filter((_, i) => i !== index);
+    setCarrito(nuevo);
+  };
+
+  const finalizarPedido = async (indicaciones) => {
   if (carrito.length === 0) return;
 
   const detalle = carrito.map(p => `${p.nombre} (${p.precio})`).join(", ");
@@ -34,11 +42,11 @@ const finalizarPedido = async () => {
 
   try {
     const res = await axios.post("https://realbarlacteo-1.onrender.com/api/pedidos", {
-      telefono: "autoservicio",
+      telefono: numeroTelefono || "autoservicio",
       detalle,
       monto: monto.toString(),
-        local: "HYATT"  // ✅ Fijado en HYATT
-
+      indicaciones,
+      local: localSeleccionado || "HYATT" // ✅ esto es lo que asegura que se guarde
     });
 
     const link = res.data?.linkPago;
@@ -53,6 +61,9 @@ const finalizarPedido = async () => {
     alert("Error al generar el pedido. Intenta nuevamente.");
   }
 };
+
+
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">
@@ -74,6 +85,8 @@ const finalizarPedido = async () => {
   onClose={() => setMostrarCarrito(false)}
   onEliminar={eliminarDelCarrito}
   onFinalizar={finalizarPedido}
+  localSeleccionado={localSeleccionado}
+  setLocalSeleccionado={setLocalSeleccionado}
 />
     </div>
   );
