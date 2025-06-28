@@ -8,7 +8,7 @@ export default function Identificarse() {
 
   const guardarTelefono = () => {
     if (telefono.trim().length >= 8) {
-      localStorage.setItem("telefono", telefono.trim());
+localStorage.setItem("numeroTelefono", telefono.trim());
       navigate("/");
     } else {
       alert("Por favor ingresa un número de teléfono válido.");

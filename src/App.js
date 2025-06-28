@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import Confirmacion from "./pages/Confirmacion";
 import Registro from "./pages/Registro"; // nueva vista
+import Identificarse from "./pages/Identificarse";
 
 function AppRoutes() {
   const navigate = useNavigate();
@@ -28,8 +29,12 @@ function AppRoutes() {
 
 function App() {
   return (
+   
     <Router>
-      <AppRoutes />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/identificarse" element={<Identificarse />} />
+      </Routes>
     </Router>
   );
 }
