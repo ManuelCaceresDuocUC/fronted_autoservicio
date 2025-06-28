@@ -1,41 +1,24 @@
 // src/App.js
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
-import Home from "./pages/Home";
-import Cart from "./pages/Cart";
-import Confirmacion from "./pages/Confirmacion";
-import Registro from "./pages/Registro"; // nueva vista
-import Identificarse from "./pages/Identificarse";
-
-function AppRoutes() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const telefono = localStorage.getItem("telefonoUsuario");
-    if (!telefono) {
-      navigate("/registro");
-    }
-  }, []);
-
-  return (
-    <Routes>
-      <Route path="/registro" element={<Registro />} />
-      <Route path="/" element={<Home />} />
-      <Route path="/carrito" element={<Cart />} />
-      <Route path="/confirmacion" element={<Confirmacion />} />
-    </Routes>
-  );
-}
+import React from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import AppRoutes from "./AppRoutes";
 
 function App() {
   return (
-   
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/identificarse" element={<Identificarse />} />
-      </Routes>
-    </Router>
+    <div
+      className="min-h-screen bg-repeat bg-left-top relative"
+      style={{ backgroundImage: "url('/img/fondo.png')" }}
+    >
+      {/* Capa translúcida para oscurecer el fondo */}
+      <div className="absolute inset-0 bg-black bg-opacity-30 z-0"></div>
+
+      {/* Contenido de la aplicación */}
+      <div className="relative z-10">
+        <Router>
+          <AppRoutes />
+        </Router>
+      </div>
+    </div>
   );
 }
 
