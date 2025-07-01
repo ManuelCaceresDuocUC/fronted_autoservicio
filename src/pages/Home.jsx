@@ -41,7 +41,7 @@ function Home() {
 
     const intervalo = setInterval(async () => {
       try {
-        const res = await axios.get(`https://realbarlacteo-1.onrender.com/api/pedidos/ultimo-estado?telefono=${numeroTelefono}`);
+        const res = await axios.get(`https://realbarlacteo-1.onrender.com/api/pedidos/ultimo-estado?telefono=${encodeURIComponent(numeroTelefono)}`);
         const nuevoEstado = res.data?.estado;
 
         if (nuevoEstado && nuevoEstado !== "pendiente" && nuevoEstado !== estadoPedido) {

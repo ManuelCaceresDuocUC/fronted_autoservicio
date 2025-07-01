@@ -8,11 +8,11 @@ export default function HistorialSidebar({ visible, onClose }) {
   useEffect(() => {
     if (!visible) return;
 
-    const telefono = localStorage.getItem("telefonoUsuario");
+    const telefono = localStorage.getItem("numeroTelefono");
     if (!telefono) return;
 
     axios
-      .get(`https://realbarlacteo-1.onrender.com/api/pedidos/telefono?numero=${telefono}`)
+        .get(`https://realbarlacteo-1.onrender.com/api/pedidos/telefono?numero=${encodeURIComponent(telefono)}`)
       .then(res => setPedidos(res.data))
       .catch(err => console.error("Error al obtener historial:", err));
   }, [visible]);
