@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const Registro = () => {
   const [telefono, setTelefono] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,9 +13,19 @@ const Registro = () => {
     }
   }, [navigate]);
 
+  const esTelefonoValido = (numero) => {
+    const regex = /^\+569\d{8}$/;
+    return regex.test(numero);
+  };
+
   const guardarTelefono = () => {
     if (!telefono.trim()) {
-      alert("Por favor ingresa tu número de teléfono.");
+      setError("Por favor ingresa tu número de teléfono.");
+      return;
+    }
+
+    if (!esTelefonoValido(telefono.trim())) {
+      setError("El número debe tener el formato +56912345678.");
       return;
     }
 
@@ -30,10 +41,16 @@ const Registro = () => {
         <input
           type="tel"
           value={telefono}
-          onChange={(e) => setTelefono(e.target.value)}
-          className="w-full p-2 mb-6 border rounded"
+          onChange={(e) => {
+            setTelefono(e.target.value);
+            setError(""); // Limpiar error al escribir
+          }}
+          className={`w-full p-2 mb-2 border rounded ${
+            error ? "border-red-500" : "border-gray-300"
+          }`}
           placeholder="+56912345678"
         />
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <button
           onClick={guardarTelefono}
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold"
