@@ -99,13 +99,25 @@ function Home() {
 
   return (
     <div className="p-6">
-      <div className="bg-white bg-opacity-80 rounded-lg p-4 shadow-md mb-6">
-        <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">
-          Bienvenido al Bartolo Apolinav
-        </h1>
-        <p className="text-sm text-center text-gray-800">
-          Teléfono identificado: <strong>{numeroTelefono}</strong>
-        </p>
+      <div className="flex items-center justify-center gap-4 bg-white bg-opacity-80 rounded-lg p-4 shadow-md mb-6 flex-wrap">
+        <img
+          src="/logo-bartolo.png"
+          alt="Logo izquierdo"
+          className="w-16 h-16 hidden sm:block"
+        />
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Bienvenido al Bartolo Apolinav
+          </h1>
+          <p className="text-sm text-gray-800">
+            Teléfono identificado: <span className="font-semibold text-blue-800">{numeroTelefono}</span>
+          </p>
+        </div>
+        <img
+          src="/logo-bartolo.png"
+          alt="Logo derecho"
+          className="w-16 h-16 hidden sm:block"
+        />
       </div>
 
       {/* 🔔 Mensaje reactivo de estado del pedido */}
