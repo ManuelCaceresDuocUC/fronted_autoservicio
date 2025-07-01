@@ -28,7 +28,7 @@ const CartSidebar = ({
     >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Tu carrito</h2>
-        <button onClick={onClose} className="text-red-500 font-bold">X</button>
+        <button onClick={onClose} className="text-red-500 font-bold">Cerrar</button>
       </div>
 
       {carrito.length === 0 ? (
