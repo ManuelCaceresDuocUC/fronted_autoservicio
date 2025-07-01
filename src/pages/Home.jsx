@@ -4,6 +4,9 @@ import axios from "axios";
 import ProductCard from "../components/ProductCard";
 import FloatingCartButton from "../components/FloatingCartButton";
 import CartSidebar from "../components/CartSidebar";
+import FloatingHistoryButton from "../components/FloatingHistoryButton";
+import HistorialSidebar from "../components/HistorialSidebar";
+
 
 function Home() {
   const [productos, setProductos] = useState([]);
@@ -13,6 +16,7 @@ function Home() {
   const [localSeleccionado, setLocalSeleccionado] = useState("HYATT");
   const [estadoPedido, setEstadoPedido] = useState("");
   const [mensajeVisible, setMensajeVisible] = useState(false);
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
 
   const navigate = useNavigate();
   const numeroTelefono = localStorage.getItem("numeroTelefono");
@@ -126,6 +130,13 @@ function Home() {
       <FloatingCartButton
         onClick={() => setMostrarCarrito(true)}
         cantidad={carrito.length}
+      />
+      <FloatingHistoryButton
+        onClick={() => setMostrarHistorial(true)} // Debes definir este estado y sidebar
+      />
+      <HistorialSidebar
+        visible={mostrarHistorial}
+        onClose={() => setMostrarHistorial(false)}
       />
 
       <CartSidebar
