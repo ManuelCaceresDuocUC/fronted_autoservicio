@@ -35,15 +35,13 @@ function Home() {
       .catch(err => console.error(err));
   }, []);
 
-  // 🔁 Verificar el estado del último pedido cada 10 segundos
+  // Verificar estado del pedido cada 10 segundos
   useEffect(() => {
     if (!numeroTelefono) return;
-
     const intervalo = setInterval(async () => {
       try {
         const res = await axios.get(`https://realbarlacteo-1.onrender.com/api/pedidos/ultimo-estado?telefono=${encodeURIComponent(numeroTelefono)}`);
         const nuevoEstado = res.data?.estado;
-
         if (nuevoEstado && nuevoEstado !== "pendiente" && nuevoEstado !== estadoPedido) {
           setEstadoPedido(nuevoEstado);
           setMensajeVisible(true);
@@ -51,10 +49,30 @@ function Home() {
       } catch (err) {
         console.error("Error al verificar el estado del pedido:", err);
       }
-    }, 10000); // cada 10 segundos
-
+    }, 10000);
     return () => clearInterval(intervalo);
   }, [numeroTelefono, estadoPedido]);
+
+  // 🕒 Verifica si el usuario está en la franja horaria restringida
+  const estaEnFranjaRestringida = () => {
+  const ahora = new Date();
+  const minutosActuales = ahora.getHours() * 60 + ahora.getMinutes();
+  const inicio = 11 * 60; // 11:00
+  const fin = 15 * 60;    // 15:00
+  return minutosActuales < inicio || minutosActuales >= fin;
+};
+  if (estaEnFranjaRestringida()) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-center px-4">
+        <div className="bg-white p-6 rounded shadow max-w-md w-full">
+          <h2 className="text-xl font-bold mb-4 text-red-600">⏱️ No disponible</h2>
+          <p className="text-gray-700">
+            El servicio está temporalmente inactivo. Puedes hacer tu pedido entre las <strong>11:00 hrs</strong> y las <strong>15:00 hrs</strong>.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const agregarAlCarrito = (producto) => {
     setCarrito([...carrito, producto]);
@@ -68,7 +86,6 @@ function Home() {
 
   const finalizarPedido = async (indicaciones) => {
     if (carrito.length === 0) return;
-
     const detalle = carrito.map(p => `${p.nombre} (${p.precio})`).join(", ");
     const monto = carrito.reduce((acc, item) => {
       const precio = parseInt(item.precio.replace(/[^0-9]/g, ""), 10);
@@ -85,7 +102,7 @@ function Home() {
       });
 
       const link = res.data?.linkPago;
-      if (link && typeof link === "string" && link.startsWith("http")) {
+      if (link?.startsWith("http")) {
         window.location.href = link;
       } else {
         alert("No se pudo generar el link de pago.");
@@ -100,36 +117,20 @@ function Home() {
   return (
     <div className="p-6">
       <div className="flex items-center justify-center gap-4 bg-white bg-opacity-80 rounded-lg p-4 shadow-md mb-6 flex-wrap">
-        <img
-          src="/logo-bartolo.png"
-          alt="Logo izquierdo"
-          className="w-16 h-16 hidden sm:block"
-        />
+        <img src="/logo-bartolo.png" alt="Logo izquierdo" className="w-16 h-16 hidden sm:block" />
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Bienvenido al Bartolo Apolinav
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900">Bienvenido al Bartolo Apolinav</h1>
           <p className="text-sm text-gray-800">
             Teléfono identificado: <span className="font-semibold text-blue-800">{numeroTelefono}</span>
           </p>
         </div>
-        <img
-          src="/logo-bartolo.png"
-          alt="Logo derecho"
-          className="w-16 h-16 hidden sm:block"
-        />
+        <img src="/logo-bartolo.png" alt="Logo derecho" className="w-16 h-16 hidden sm:block" />
       </div>
 
-      {/* 🔔 Mensaje reactivo de estado del pedido */}
       {mensajeVisible && (
         <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded mb-4 text-center">
-          Tu pedido está <strong>{estadoPedido}</strong>. Por favor acércate al mesón.
-          <button
-            className="ml-4 text-blue-600 underline"
-            onClick={() => setMensajeVisible(false)}
-          >
-            Cerrar
-          </button>
+          Tu último pedido está <strong>{estadoPedido}</strong>.
+          <button onClick={() => setMensajeVisible(false)} className="ml-4 text-blue-600 underline">Cerrar</button>
         </div>
       )}
 
@@ -139,18 +140,9 @@ function Home() {
         ))}
       </div>
 
-      <FloatingCartButton
-        onClick={() => setMostrarCarrito(true)}
-        cantidad={carrito.length}
-      />
-      <FloatingHistoryButton
-        onClick={() => setMostrarHistorial(true)} // Debes definir este estado y sidebar
-      />
-      <HistorialSidebar
-        visible={mostrarHistorial}
-        onClose={() => setMostrarHistorial(false)}
-      />
-
+      <FloatingCartButton onClick={() => setMostrarCarrito(true)} cantidad={carrito.length} />
+      <FloatingHistoryButton onClick={() => setMostrarHistorial(true)} />
+      <HistorialSidebar visible={mostrarHistorial} onClose={() => setMostrarHistorial(false)} />
       <CartSidebar
         visible={mostrarCarrito}
         carrito={carrito}
@@ -163,5 +155,6 @@ function Home() {
     </div>
   );
 }
+
 
 export default Home;
