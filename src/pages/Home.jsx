@@ -58,7 +58,7 @@ function Home() {
   const ahora = new Date();
   const minutosActuales = ahora.getHours() * 60 + ahora.getMinutes();
   const inicio = 11 * 60; // 11:00
-  const fin = 19 * 60;    // 15:00
+  const fin = 22 * 60;    // 15:00
   return minutosActuales < inicio || minutosActuales >= fin;
 };
   if (estaEnFranjaRestringida()) {
