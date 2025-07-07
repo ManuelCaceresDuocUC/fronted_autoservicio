@@ -11,10 +11,12 @@ const CartSidebar = ({
 }) => {
   const [indicaciones, setIndicaciones] = useState("");
 
-  const total = carrito.reduce((acc, item) => {
-    const precio = parseInt(item.precio.replace(/[^0-9]/g, ""), 10);
-    return acc + (isNaN(precio) ? 0 : precio);
-  }, 0);
+ const total = carrito.reduce((acc, item) => {
+  const precioTexto = String(item.precio || "").replace(/[^\d]/g, ""); // elimina $, CLP, etc.
+  const precio = parseInt(precioTexto, 10);
+  return acc + (isNaN(precio) ? 0 : precio);
+}, 0);
+
 
   const finalizarConIndicaciones = () => {
     onFinalizar(indicaciones);
