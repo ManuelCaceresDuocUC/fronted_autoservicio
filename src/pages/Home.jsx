@@ -137,9 +137,8 @@ function Home() {
       </div>
 
       {mensajeVisible && (
-        <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded mb-4 text-center">
-          Tu último pedido está <strong>{estadoPedido}</strong>.
-          <button onClick={() => setMensajeVisible(false)} className="ml-4 text-blue-600 underline">Cerrar</button>
+        <div className="bg-yellow-100 border border-yellow-300 text-yellow-900 px-4 py-3 rounded mb-4 text-center">
+          Tu último pedido está <strong>entregado</strong>. <button>...</button>
         </div>
       )}
 
