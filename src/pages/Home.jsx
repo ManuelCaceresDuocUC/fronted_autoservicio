@@ -7,7 +7,6 @@ import CartSidebar from "../components/CartSidebar";
 import FloatingHistoryButton from "../components/FloatingHistoryButton";
 import HistorialSidebar from "../components/HistorialSidebar";
 
-
 function Home() {
   const [productos, setProductos] = useState([]);
   const [carrito, setCarrito] = useState([]);
@@ -17,6 +16,7 @@ function Home() {
   const [estadoPedido, setEstadoPedido] = useState("");
   const [mensajeVisible, setMensajeVisible] = useState(false);
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
 
   const navigate = useNavigate();
   const numeroTelefono = localStorage.getItem("numeroTelefono");
@@ -31,7 +31,13 @@ function Home() {
   // Obtener catálogo de productos
   useEffect(() => {
     axios.get("https://realbarlacteo-1.onrender.com/api/catalogo")
-      .then(res => setProductos(res.data))
+      .then(res => {
+        setProductos(res.data);
+        const categoriasUnicas = [...new Set(res.data.map(p => p.categoria))];
+        if (categoriasUnicas.length > 0) {
+          setCategoriaSeleccionada(categoriasUnicas[0]);
+        }
+      })
       .catch(err => console.error(err));
   }, []);
 
@@ -55,12 +61,13 @@ function Home() {
 
   // 🕒 Verifica si el usuario está en la franja horaria restringida
   const estaEnFranjaRestringida = () => {
-  const ahora = new Date();
-  const minutosActuales = ahora.getHours() * 60 + ahora.getMinutes();
-  const inicio = 11 * 60; // 11:00
-  const fin = 22 * 60;    // 15:00
-  return minutosActuales < inicio || minutosActuales >= fin;
-};
+    const ahora = new Date();
+    const minutosActuales = ahora.getHours() * 60 + ahora.getMinutes();
+    const inicio = 11 * 60; // 11:00
+    const fin = 15 * 60;    // 15:00
+    return minutosActuales < inicio || minutosActuales >= fin;
+  };
+
   if (estaEnFranjaRestringida()) {
     return (
       <div className="flex items-center justify-center min-h-screen text-center px-4">
@@ -114,6 +121,8 @@ function Home() {
     }
   };
 
+  const categorias = [...new Set(productos.map(p => p.categoria))];
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-center gap-4 bg-white bg-opacity-80 rounded-lg p-4 shadow-md mb-6 flex-wrap">
@@ -134,9 +143,27 @@ function Home() {
         </div>
       )}
 
+      {/* 🔘 Botones de categoría */}
+      <div className="flex flex-wrap justify-center gap-2 mb-6">
+        {categorias.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setCategoriaSeleccionada(cat)}
+            className={`px-4 py-2 rounded-full ${
+              categoriaSeleccionada === cat ? "bg-yellow-400 font-bold text-black" : "bg-gray-200 text-gray-700"
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* 📦 Productos filtrados */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {productos.map(p => (
-          <ProductCard key={p.nombre} producto={p} onAgregar={agregarAlCarrito} />
+        {productos
+          .filter(p => p.categoria === categoriaSeleccionada)
+          .map(p => (
+            <ProductCard key={p.nombre} producto={p} onAgregar={agregarAlCarrito} />
         ))}
       </div>
 
@@ -155,6 +182,5 @@ function Home() {
     </div>
   );
 }
-
 
 export default Home;
