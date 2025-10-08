@@ -17,8 +17,8 @@ localStorage.setItem("numeroTelefono", telefono.trim());
 
   return (
     <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4 text-center">Identifícate</h1>
-      <p className="text-gray-700 mb-2">Ingresa tu número de teléfono para identificarte en tus pedidos:</p>
+      <h1 className="text-2xl text-white font-bold mb-4 text-center">Identifícate</h1>
+      <p className="text-white mb-2">Ingresa tu número de teléfono para identificarte en tus pedidos:</p>
       <input
         type="tel"
         className="border rounded p-2 w-full mb-4"
