@@ -1,28 +1,46 @@
-// Catalogo.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import ProductCard from "./ProductCard"; // ajusta la ruta si corresponde
 
-const BASE = "https://realbarlacteo-1.onrender.com"; // mismo host del catálogo
+const BASE = "https://realbarlacteo-1.onrender.com";
+
+/** Normaliza un producto: asegura `precio` numérico y campos clave */
+const normalizeProducto = (p) => {
+  const precioRaw = p?.precio ?? p?.price ?? 0;
+  const precioNum =
+    typeof precioRaw === "number"
+      ? precioRaw
+      : parseInt(String(precioRaw).replace(/[^\d]/g, ""), 10) || 0;
+
+  return {
+    id: p?.id ?? p?.codigo ?? `${p?.nombre ?? "item"}-${Math.random()}`,
+    nombre: p?.nombre ?? "",
+    descripcion: p?.descripcion ?? "",
+    imagen: p?.imagen ?? p?.img ?? "",
+    categoria: p?.categoria ?? "Otros",
+    precio: precioNum,
+  };
+};
 
 export default function Catalogo() {
   const [productos, setProductos] = useState([]);
   const [stock, setStock] = useState([]); // [{id,nombre,disponible,stock}]
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
 
-  // Cargar catálogo una vez
+  // Cargar catálogo
   useEffect(() => {
     axios
       .get(`${BASE}/api/catalogo`)
       .then((res) => {
-        setProductos(res.data || []);
-        const cats = [...new Set((res.data || []).map((p) => p.categoria))];
+        const list = Array.isArray(res.data) ? res.data.map(normalizeProducto) : [];
+        setProductos(list);
+        const cats = [...new Set(list.map((p) => p.categoria))];
         if (cats.length) setCategoriaSeleccionada(cats[0]);
       })
       .catch((err) => console.error("Error catálogo:", err));
   }, []);
 
-  // Cargar stock y refrescar cada 15 s
+  // Cargar stock y refrescar
   useEffect(() => {
     let cancel = false;
     const cargar = async () => {
@@ -41,14 +59,14 @@ export default function Catalogo() {
     };
   }, []);
 
-  // Mapa rápido: nombre -> {disponible, stock}
+  // nombre -> stock info
   const stockMap = useMemo(() => {
     const m = new Map();
-    for (const s of stock) m.set((s.nombre || "").toLowerCase(), s);
+    for (const s of stock) m.set((s?.nombre || "").toLowerCase(), s);
     return m;
   }, [stock]);
 
-  // Productos filtrados + merge de stock
+  // Productos filtrados con merge de stock
   const productosFiltrados = useMemo(() => {
     return productos
       .filter((p) => p.categoria === categoriaSeleccionada)
@@ -56,27 +74,24 @@ export default function Catalogo() {
         const s = stockMap.get((p.nombre || "").toLowerCase());
         return {
           ...p,
-          disponible: s ? Boolean(s.disponible) : true,
+          disponible: s ? Boolean(s.disponible) && Number(s.stock) > 0 : true,
           stock: s ? Number(s.stock) : null,
         };
       });
   }, [productos, categoriaSeleccionada, stockMap]);
 
-  // Handler de agregar (ajústalo a tu carrito)
   const onAgregar = (producto) => {
     if (!producto?.disponible || (producto?.stock ?? 0) <= 0) return;
-    // TODO: integra con tu carrito
+    // TODO: integra con tu carrito real
     console.log("Agregar:", producto.nombre);
   };
 
-  // Categorías
   const categorias = [...new Set(productos.map((p) => p.categoria))];
 
   return (
     <div className="p-4 bg-white min-h-screen">
       <h1 className="text-2xl font-bold mb-4 text-center">Catálogo de Productos</h1>
 
-      {/* Botones de categoría */}
       <div className="flex flex-wrap justify-center gap-2 mb-6">
         {categorias.map((cat) => (
           <button
@@ -93,11 +108,10 @@ export default function Catalogo() {
         ))}
       </div>
 
-      {/* Grid de productos */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {productosFiltrados.map((producto, idx) => (
+        {productosFiltrados.map((producto) => (
           <ProductCard
-            key={`${producto.nombre}-${idx}`}
+            key={`${producto.id}`}
             producto={producto}
             onAgregar={onAgregar}
           />
