@@ -1,35 +1,42 @@
 import React, { useEffect, useState } from "react";
 
-/** Formatea a CLP desde number o string ("$3.500", "3500") */
+const BASE = "https://realbarlacteo-1.onrender.com";
+
+/** CLP seguro desde number o string ("$3.500", "3500") */
 const toCLP = (v) => {
   const n = typeof v === "number" ? v : parseInt(String(v ?? 0).replace(/[^\d]/g, ""), 10);
-  return new Intl.NumberFormat("es-CL", {
-    style: "currency",
-    currency: "CLP",
-    maximumFractionDigits: 0,
-  }).format(isNaN(n) ? 0 : n);
+  return new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 })
+    .format(isNaN(n) ? 0 : n);
 };
 
+/** normaliza: minúsculas y sin tildes */
+const norm = (s = "") => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
 export default function ProductCard({ producto, onAgregar }) {
-  const [stock, setStock] = useState(null);
+  const [stock, setStock] = useState(0);
   const [disponible, setDisponible] = useState(true);
 
   async function cargarStock() {
     try {
-      const res = await fetch("/api/stock", { cache: "no-store" });
-      if (!res.ok) return;
+      const res = await fetch(`${BASE}/api/stock`, { cache: "no-store" });
+      if (!res.ok) { setStock(0); setDisponible(false); return; }
       const items = await res.json(); // [{id,nombre,disponible,stock}]
-      const p = items.find(
-        (x) => x.nombre?.toLowerCase() === producto.nombre?.toLowerCase()
-      );
+      const name = norm(producto?.nombre || "");
+      const p = items.find((x) => norm(x?.nombre || "") === name);
       if (p) {
-        setStock(Number(p.stock) ?? 0);
-        setDisponible(Boolean(p.disponible) && Number(p.stock) > 0);
+        const s = Number(p.stock) || 0;
+        setStock(s);
+        setDisponible(Boolean(p.disponible) && s > 0);
       } else {
         setStock(0);
         setDisponible(false);
+        console.warn("Stock no encontrado para:", producto?.nombre);
       }
-    } catch {}
+    } catch (e) {
+      setStock(0);
+      setDisponible(false);
+      console.warn("Error cargando stock:", e);
+    }
   }
 
   useEffect(() => {
@@ -43,17 +50,9 @@ export default function ProductCard({ producto, onAgregar }) {
   return (
     <div className="bg-white/80 backdrop-blur-sm shadow-lg border border-gray-300 hover:border-yellow-400 rounded-xl p-4 m-2 w-64 transition transform hover:-translate-y-1 hover:shadow-xl">
       <div className="relative">
-        <img
-          src={producto.imagen}
-          alt={producto.nombre}
-          className="w-full h-40 object-cover rounded mb-3"
-        />
-        <span
-          className={`absolute top-2 right-2 text-xs px-2 py-1 rounded ${
-            disponible ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-          }`}
-        >
-          Stock: {stock ?? "…"}
+        <img src={producto.imagen} alt={producto.nombre} className="w-full h-40 object-cover rounded mb-3" />
+        <span className={`absolute top-2 right-2 text-xs px-2 py-1 rounded ${disponible ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+          Stock: {stock}
         </span>
       </div>
 

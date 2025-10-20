@@ -4,7 +4,7 @@ import ProductCard from "./ProductCard"; // ajusta la ruta si corresponde
 
 const BASE = "https://realbarlacteo-1.onrender.com";
 
-/** Normaliza un producto: asegura `precio` numérico y campos clave */
+/** Normaliza un producto y asegura precio numérico */
 const normalizeProducto = (p) => {
   const precioRaw = p?.precio ?? p?.price ?? 0;
   const precioNum =
@@ -82,7 +82,7 @@ export default function Catalogo() {
 
   const onAgregar = (producto) => {
     if (!producto?.disponible || (producto?.stock ?? 0) <= 0) return;
-    // TODO: integra con tu carrito real
+    // integra con tu carrito real
     console.log("Agregar:", producto.nombre);
   };
 
