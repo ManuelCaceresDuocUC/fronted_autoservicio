@@ -15,6 +15,7 @@ function ProductCard({ producto, onAgregar }) {
         onClick={() => onAgregar(producto)}
         className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-1 px-3 rounded mt-3"
       >
+        
         Agregar al carrito
       </button>
     </div>
