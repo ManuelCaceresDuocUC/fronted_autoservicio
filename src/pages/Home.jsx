@@ -11,7 +11,6 @@ function Home() {
   const [productos, setProductos] = useState([]);
   const [carrito, setCarrito] = useState([]);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
-  const [indicaciones, setIndicaciones] = useState("");
   const [localSeleccionado, setLocalSeleccionado] = useState("HYATT");
   const [estadoPedido, setEstadoPedido] = useState("");
   const [mensajeVisible, setMensajeVisible] = useState(false);

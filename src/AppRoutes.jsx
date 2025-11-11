@@ -13,9 +13,9 @@ export default function AppRoutes() {
   useEffect(() => {
     const telefono = localStorage.getItem("telefonoUsuario");
     if (!telefono && window.location.pathname !== "/registro") {
-      navigate("/registro");
+      navigate("/registro", { replace: true });
     }
-  }, []);
+  }, [navigate]); // <- agrega navigate
 
   return (
     <Routes>
