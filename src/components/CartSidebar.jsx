@@ -71,7 +71,6 @@ const CartSidebar = ({
               onChange={(e) => setLocalSeleccionado(e.target.value)}
             >
               <option value="HYATT">HYATT</option>
-              <option value="CHARLES">CHARLES</option>
             </select>
           </div>
 
