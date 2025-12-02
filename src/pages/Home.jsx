@@ -63,7 +63,7 @@ function Home() {
     const ahora = new Date();
     const minutosActuales = ahora.getHours() * 60 + ahora.getMinutes();
     const inicio = 11 * 60; // 11:00
-    const fin = 12 * 60;    // 15:00
+    const fin = 15 * 60;    // 15:00
     return minutosActuales < inicio || minutosActuales >= fin;
   };
 
@@ -92,16 +92,23 @@ function Home() {
 
   const finalizarPedido = async (indicaciones) => {
     if (carrito.length === 0) return;
-    const detalle = carrito.map(p => `${p.nombre} (${p.precio})`).join(", ");
+
+    // --- CORRECCIÓN AQUÍ ---
+    // Usamos salto de línea (\n) y quitamos el precio del texto para no confundir al stock
+    const detalle = carrito.map(p => `1 x ${p.nombre}`).join("\n");
+    // -----------------------
+
     const monto = carrito.reduce((acc, item) => {
-      const precio = parseInt(item.precio.replace(/[^0-9]/g, ""), 10);
-      return acc + precio;
+      // Aseguramos que item.precio sea string antes de limpiar
+      const precioStr = String(item.precio || "0");
+      const precio = parseInt(precioStr.replace(/[^0-9]/g, ""), 10);
+      return acc + (isNaN(precio) ? 0 : precio);
     }, 0);
 
     try {
       const res = await axios.post("https://realbarlacteo-1.onrender.com/api/pedidos", {
         telefono: numeroTelefono || "autoservicio",
-        detalle,
+        detalle, // Ahora enviamos el detalle limpio
         monto: monto.toString(),
         indicaciones,
         local: localSeleccionado || "HYATT"
