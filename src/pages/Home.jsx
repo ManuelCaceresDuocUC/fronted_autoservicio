@@ -63,7 +63,7 @@ function Home() {
     const ahora = new Date();
     const minutosActuales = ahora.getHours() * 60 + ahora.getMinutes();
     const inicio = 11 * 60; // 11:00
-    const fin = 22 * 60;    // 15:00
+    const fin = 12 * 60;    // 15:00
     return minutosActuales < inicio || minutosActuales >= fin;
   };
 
@@ -73,7 +73,7 @@ function Home() {
         <div className="bg-white p-6 rounded shadow max-w-md w-full">
           <h2 className="text-xl font-bold mb-4 text-red-600">⏱️ No disponible</h2>
           <p className="text-gray-700">
-            El servicio está temporalmente inactivo. Puedes hacer tu pedido entre las <strong>11:00 hrs</strong> y las <strong>15:00 hrs</strong>.
+            El servicio está temporalmente inactivo
           </p>
         </div>
       </div>
