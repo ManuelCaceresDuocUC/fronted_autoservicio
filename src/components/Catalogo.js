@@ -89,33 +89,35 @@ export default function Catalogo() {
   const categorias = [...new Set(productos.map((p) => p.categoria))];
 
   return (
-    <div className="p-4 bg-white min-h-screen">
-      <h1 className="text-2xl font-bold mb-4 text-center">Catálogo de Productos</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6 font-sans">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-900 tracking-tight">Catálogo de Productos</h1>
 
-      <div className="flex flex-wrap justify-center gap-2 mb-6">
-        {categorias.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setCategoriaSeleccionada(cat)}
-            className={`px-4 py-2 rounded-full transition ${
-              categoriaSeleccionada === cat
-                ? "bg-yellow-400 font-bold text-black"
-                : "bg-gray-200 text-gray-700"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
+          {categorias.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategoriaSeleccionada(cat)}
+              className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-sm ${
+                categoriaSeleccionada === cat
+                  ? "bg-yellow-400 text-black shadow-yellow-400/40 hover:bg-yellow-500 transform -translate-y-1"
+                  : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {productosFiltrados.map((producto) => (
-          <ProductCard
-            key={`${producto.id}`}
-            producto={producto}
-            onAgregar={onAgregar}
-          />
-        ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {productosFiltrados.map((producto) => (
+            <ProductCard
+              key={`${producto.id}`}
+              producto={producto}
+              onAgregar={onAgregar}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

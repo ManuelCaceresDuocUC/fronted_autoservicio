@@ -34,26 +34,31 @@ const Registro = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-4">Identifícate</h2>
-        <label className="block mb-2 font-semibold">Teléfono:</label>
-        <input
-          type="tel"
-          value={telefono}
-          onChange={(e) => {
-            setTelefono(e.target.value);
-            setError(""); // Limpiar error al escribir
-          }}
-          className={`w-full p-2 mb-2 border rounded ${
-            error ? "border-red-500" : "border-gray-300"
-          }`}
-          placeholder="+56912345678"
-        />
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200 p-4">
+      <div className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-gray-100">
+        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-2 tracking-tight">Identifícate</h2>
+        <p className="text-center text-gray-500 mb-8 text-sm">Necesitamos tu número para tus pedidos</p>
+        
+        <div className="mb-6">
+          <label className="block mb-2 font-semibold text-gray-700">Teléfono:</label>
+          <input
+            type="tel"
+            value={telefono}
+            onChange={(e) => {
+              setTelefono(e.target.value);
+              setError(""); // Limpiar error al escribir
+            }}
+            className={`w-full p-4 border rounded-xl bg-gray-50 text-gray-900 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              error ? "border-red-500 focus:ring-red-500" : "border-gray-200"
+            }`}
+            placeholder="+56912345678"
+          />
+          {error && <p className="text-red-500 text-sm mt-2 font-medium animate-pulse">{error}</p>}
+        </div>
+        
         <button
           onClick={guardarTelefono}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold"
+          className="w-full bg-blue-600 text-white py-4 rounded-xl hover:bg-blue-700 hover:shadow-lg font-bold text-lg transition-all active:scale-95"
         >
           Continuar
         </button>

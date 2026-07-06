@@ -7,7 +7,7 @@ function App() {
   return (
     <div
       className="min-h-screen bg-repeat bg-left-top relative"
-      style={{ backgroundImage: "url('/img/fondo1.jpg')" }}
+      style={{ backgroundImage: "url('/img/fondo4.webp')" }}
     >
       {/* Capa translúcida para oscurecer el fondo */}
       <div className="absolute inset-0 bg-black bg-opacity-30 z-0"></div>

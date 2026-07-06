@@ -8,7 +8,7 @@ export default function Identificarse() {
 
   const guardarTelefono = () => {
     if (telefono.trim().length >= 8) {
-localStorage.setItem("numeroTelefono", telefono.trim());
+      localStorage.setItem("numeroTelefono", telefono.trim());
       navigate("/");
     } else {
       alert("Por favor ingresa un número de teléfono válido.");
@@ -16,22 +16,31 @@ localStorage.setItem("numeroTelefono", telefono.trim());
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl text-white font-bold mb-4 text-center">Identifícate</h1>
-      <p className="text-white mb-2">Ingresa tu número de teléfono para identificarte en tus pedidos:</p>
-      <input
-        type="tel"
-        className="border rounded p-2 w-full mb-4"
-        placeholder="Ej: +56912345678"
-        value={telefono}
-        onChange={(e) => setTelefono(e.target.value)}
-      />
-      <button
-        onClick={guardarTelefono}
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full"
-      >
-        Continuar
-      </button>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4">
+      <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-3xl shadow-2xl w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl text-white font-extrabold mb-2 tracking-tight">Bienvenido</h1>
+          <p className="text-gray-300 text-sm">Ingresa tu número para gestionar tus pedidos</p>
+        </div>
+        
+        <div className="mb-6">
+          <label className="block text-gray-300 text-sm font-medium mb-2">Teléfono móvil</label>
+          <input
+            type="tel"
+            className="w-full bg-white/5 border border-gray-500 text-white rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all placeholder-gray-500"
+            placeholder="Ej: +56912345678"
+            value={telefono}
+            onChange={(e) => setTelefono(e.target.value)}
+          />
+        </div>
+        
+        <button
+          onClick={guardarTelefono}
+          className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold text-lg px-4 py-4 rounded-xl shadow-lg transition-transform transform active:scale-95"
+        >
+          Continuar al Menú
+        </button>
+      </div>
     </div>
   );
 }
